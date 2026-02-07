@@ -66,16 +66,18 @@ We look for **304 Not Modified** responses.
 
 #### Module E: Directory & Exposed URL Analysis
 *   **Folder Trends**: Identifies the Top 10 most crawled directories and tracks their hits over a 12-month period to find spikes.
+*   **Status Code by Subfolder**: Analyzes the specific status code distribution within these top folders. This allows SEOs to verify if `304 Not Modified` efficiency is consistent across different site sections.
 *   **Security Check**: Flags folders starting with `_` or containing sensitive keywords like `admin`, `api`, or `staging` that may be unintentionally exposed to Googlebot.
 
 ---
 
 ### Phase 6: Consolidated Google Sheets Export
-**Goal**: Unified Reporting.
+**Goal**: Unified Reporting & Native Visualizations.
 
 *   **Single-Tab Stacking**: All dataframes (Bot Types, Status Codes, Traps, Directories) are exported into a **single, timestamped tab**.
-*   **Vertical Stacking**: Sections are stacked vertically with grey-header formatting for clear readability.
-*   **Branding**: All notebook visualizations and Sheets-ready data follow iPullRank's visual identity (Yellow for #1 rank, Blue for #2 rank).
+*   **Vertical Stacking**: Sections are stacked vertically with dark grey header formatting for clear readability.
+*   **Programmatic Charts**: The script automatically generates native **Google Sheets Bar Charts** for key metrics (Bot Types, Status Codes, Top Folders) and places them alongside the data tables.
+*   **Branding**: All notebook visualizations and Sheets-ready data follow iPullRank's visual identity. Highlights use **Yellow (#FCD307)** for the #1 item and **Blue (#2A52BE)** for #2, while remaining items use an expanded grayscale gradient for visual depth.
 
 ---
 
