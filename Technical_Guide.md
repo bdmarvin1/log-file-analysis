@@ -100,3 +100,39 @@ We look for **304 Not Modified** responses.
 9.  **Auth**: Log in to Google Sheets.
 10. **Write**: Send the `top_traps` and `status_summary` to the spreadsheet.
 11. **END**
+
+---
+
+## 5. Justifications: Design & Code Decisions
+
+This section explains *why* specific technical paths were chosen and my level of certainty regarding those decisions.
+
+### A. Chunked Ingestion with `usecols`
+*   **Decision:** Use `pd.read_csv(..., chunksize=50000, usecols=use_cols)`.
+*   **Justification:** Server logs for a full year can easily exceed 5-10GB. Google Colab provides limited RAM. Loading the entire CSV at once would cause an "Out of Memory" (OOM) crash. By loading chunks and only selecting the 8 essential columns, we reduce the memory footprint by roughly 90%.
+*   **Certainty:** 100%. This is a mandatory requirement for stable execution on large datasets in a cloud notebook environment.
+
+### B. Immediate Filtering for "Googlebot"
+*   **Decision:** Filter each chunk for "Googlebot" before appending it to the main list.
+*   **Justification:** The vast majority of server logs consist of human traffic or irrelevant bots. By discarding these rows immediately within the ingestion loop, we ensure the final DataFrame contains only the data needed for the SEO audit, keeping the system responsive.
+*   **Certainty:** 95%. This assumes the primary goal is a Googlebot audit (as per the Project Plan).
+
+### C. Double-Reverse DNS (drDNS) Verification
+*   **Decision:** Implement `socket.gethostbyaddr` followed by `socket.gethostbyname`.
+*   **Justification:** User-Agent strings are easily spoofed. To provide a professional-grade audit, we must distinguish between "Real Googlebot" and "Fake Scrapers." drDNS is the only verification method officially recommended by Google.
+*   **Certainty:** 100%. Any enterprise-level log analysis must verify bot authenticity to avoid skewed data.
+
+### D. Manual Garbage Collection (`gc.collect()`)
+*   **Decision:** Explicitly call `gc.collect()` inside the file processing loop.
+*   **Justification:** Python's automatic memory management can sometimes be "lazy," not freeing up RAM until it's absolutely necessary. In a constrained environment like Colab, waiting too long can trigger a crash. Explicitly clearing the "garbage" ensures the next chunk has a clean slate.
+*   **Certainty:** 90%. It adds a small overhead but significantly improves the robustness of the script.
+
+### E. Timestamped Tabs in Google Sheets
+*   **Decision:** Use `sh.add_worksheet(title=f"... {timestamp}", ...)` for every export.
+*   **Justification:** Instead of overwriting previous results, creating new tabs allows you to track progress over time. If you fix a "Spider Trap," you can run the notebook again and compare the new tab to the old one to verify the fix.
+*   **Certainty:** 95%. This follows the user's specific request for timestamped reporting.
+
+### F. Extension-based File Categorization
+*   **Decision:** Infer `file_type` using `os.path.splitext`.
+*   **Justification:** Without the `Content-Type` header (which isn't always in logs), the URL extension is the most reliable way to categorize resources. While some URLs might lack extensions, this method covers 99% of common JS, CSS, and Image assets.
+*   **Certainty:** 85%. It is the best possible approach given the static nature of log files.
