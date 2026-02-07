@@ -55,22 +55,27 @@ We look for **304 Not Modified** responses.
 *   **Why?** A 304 means Googlebot asked "Has this file changed?" and your server said "No." This saves "Crawl Budget" because Google doesn't have to download the file again.
 *   **Logic:** If JS/CSS files are mostly `200 OK` instead of `304`, you are wasting bandwidth and Google's time.
 
-#### Module C: Spider Trap Detection
+#### Module C: Spider Trap Detection (Deep Dive)
 **Definition**: A "Spider Trap" is a part of your site that generates infinite unique URLs (usually via filters or search parameters).
-*   **Variable:** `unique_variations`.
-*   **Logic**: We group by `uri_path` (the base page) and count how many unique `full_url` values exist for it. If `/products` has 1,000 variations, Googlebot might get stuck there forever.
+*   **Deep Dive Logic**: Beyond just counting variations, we now extract sample URLs, file type breakdowns, and identify the specific **query parameters** (e.g., `sort`, `filter`, `page`) causing the bloat.
+*   **Document Check**: The script specifically flags if "traps" are actually just large collections of document files (.pdf, .doc, etc.) being crawled.
 
 #### Module D: Rendering Budget
-*   **`bytes_sent`**: We sum this up per file type.
-*   **Insight**: If "Javascript" uses 80% of your bandwidth and "HTML" only 20%, your site is "Heavy." This makes it harder for Google to render your pages, leading to the "Crawled - Currently Not Indexed" status.
+*   **`bytes_sent`**: Summed by file type and visualized with iPullRank brand colors.
+*   **Insight**: If non-HTML resources dominate the crawl budget, it explains rendering bottlenecks.
+
+#### Module E: Directory & Exposed URL Analysis
+*   **Folder Trends**: Identifies the Top 10 most crawled directories and tracks their hits over a 12-month period to find spikes.
+*   **Security Check**: Flags folders starting with `_` or containing sensitive keywords like `admin`, `api`, or `staging` that may be unintentionally exposed to Googlebot.
 
 ---
 
-### Phase 6: Google Sheets Export
-**Goal**: Persistence. Colab files are temporary; Google Sheets are permanent.
+### Phase 6: Consolidated Google Sheets Export
+**Goal**: Unified Reporting.
 
-*   **`gspread`**: A library that lets Python speak to Google Sheets.
-*   **`timestamp`**: We create new tabs with names like `Spider Traps 10/24 14:30`. This allows you to run the analysis multiple times and compare results over time without losing old data.
+*   **Single-Tab Stacking**: All dataframes (Bot Types, Status Codes, Traps, Directories) are exported into a **single, timestamped tab**.
+*   **Vertical Stacking**: Sections are stacked vertically with grey-header formatting for clear readability.
+*   **Branding**: All notebook visualizations and Sheets-ready data follow iPullRank's visual identity (Yellow for #1 rank, Blue for #2 rank).
 
 ---
 
