@@ -64,10 +64,13 @@ We look for **304 Not Modified** responses.
 *   **`bytes_sent`**: Summed by file type and visualized with iPullRank brand colors.
 *   **Insight**: If non-HTML resources dominate the crawl budget, it explains rendering bottlenecks.
 
-#### Module E: Directory & Exposed URL Analysis
-*   **Folder Trends**: Identifies the Top 10 most crawled directories and tracks their hits over a 12-month period to find spikes.
-*   **Status Code by Subfolder**: Analyzes the specific status code distribution within these top folders. This allows SEOs to verify if `304 Not Modified` efficiency is consistent across different site sections.
-*   **Security Check**: Flags folders starting with `_` or containing sensitive keywords like `admin`, `api`, or `staging` that may be unintentionally exposed to Googlebot.
+#### Module E: Advanced Directory & Performance Analysis
+*   **Granular Folder Analysis**: Now extracts directories up to a depth of 2 (e.g., `/resources/glossaries`) for more precise SEO insights.
+*   **Crawl Frequency & Volume**: Identifies both the most and least crawled folders (Bottom 10 by hits).
+*   **Relative Crawl Frequency**: Calculates the ratio of total hits to unique URLs (Size) to highlight sections where Googlebot visits each page less frequently.
+*   **Latency & Bandwidth**: Identifies performance bottlenecks by highlighting folders with the highest average latency (`time_taken`) and total bandwidth consumption (`bytes_sent` in MB).
+*   **Error Distribution**: Maps the concentration of 4xx and 5xx errors by directory to pinpoint site sections causing bot friction.
+*   **Security Check**: Continues to flag folders starting with `_` or containing sensitive keywords.
 
 ---
 
