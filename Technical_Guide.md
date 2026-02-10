@@ -135,7 +135,7 @@ Each section below corresponds to a dataset exported to the Google Sheet.
 
 | Column Header | Definition | Formula/Logic |
 | :--- | :--- | :--- |
-| `directory` | The top 2 levels of the URL path. | `/folder/subfolder/` |
+| `directory` | The top 1 level of the URL path. | `/folder` |
 | `hits_per_page` | How many times, on average, Googlebot visits each unique URL in a directory. | `Count(hits) / Count(Unique URLs)` |
 | `avg_size_bytes` | Average bandwidth consumed per request. | `Mean(bytes_sent)` |
 | `total_data_mb` | Total data transferred for a resource or folder. | `Sum(bytes_sent) / 1,048,576` |
